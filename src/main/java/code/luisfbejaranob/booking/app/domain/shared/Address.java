@@ -1,9 +1,9 @@
 package code.luisfbejaranob.booking.app.domain.shared;
 
 public record Address(
-	String country,
-	String state,
+	String street,
 	String city,
-	String value,
-	String zipCode
-) {}
+	String state,
+	String country,
+	String zipCode)
+{}

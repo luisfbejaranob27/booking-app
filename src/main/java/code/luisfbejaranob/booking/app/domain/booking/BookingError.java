@@ -1,31 +1,100 @@
 package code.luisfbejaranob.booking.app.domain.booking;
 
-import code.luisfbejaranob.booking.app.domain.shared.DomainError;
+import java.util.UUID;
 
-public enum BookingError implements DomainError
+public sealed interface BookingError
 {
-	NotPending("Booking.NotPending", "Booking is not pending"),
-	NotConfirmed("Booking.NotConfirmed", "Booking is not confirmed"),
-	AlreadyStarted("Booking.AlreadyStarted", "Booking has already started");
+	String getCode();
 
-	private final String code;
-	private final String message;
+	String getMessage();
 
-	BookingError(String code, String message)
+	record NotPending(UUID bookingId) implements BookingError
 	{
-		this.code = code;
-		this.message = message;
+		@Override
+		public String getCode()
+		{
+			return "Booking.NotPending";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Booking is not pending";
+		}
 	}
 
-	@Override
-	public String getCode()
+	record NotConfirmed(UUID bookingId) implements BookingError
 	{
-		return code;
+		@Override
+		public String getCode()
+		{
+			return "Booking.NotConfirmed";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Booking is not confirmed";
+		}
 	}
 
-	@Override
-	public String getMessage()
+	record AlreadyStarted(UUID bookingId) implements BookingError
 	{
-		return message;
+		@Override
+		public String getCode()
+		{
+			return "Booking.AlreadyStarted";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Booking has already started";
+		}
+	}
+
+	record BookingNotFound(UUID bookingId) implements BookingError
+	{
+		@Override
+		public String getCode()
+		{
+			return "Booking.NotFound";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Booking not found with id: " + bookingId;
+		}
+	}
+
+	record InvalidDateRange(UUID bookingId, String reason) implements BookingError
+	{
+		@Override
+		public String getCode()
+		{
+			return "Booking.InvalidDateRange";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Invalid date range: " + reason;
+		}
+	}
+
+	record BookingConflict(UUID bookingId, String conflictingBookingId) implements BookingError
+	{
+		@Override
+		public String getCode()
+		{
+			return "Booking.Conflict";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Booking conflicts with existing booking: " + conflictingBookingId;
+		}
 	}
 }

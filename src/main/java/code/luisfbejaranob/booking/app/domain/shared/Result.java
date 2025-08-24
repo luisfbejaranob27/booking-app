@@ -1,65 +1,57 @@
 package code.luisfbejaranob.booking.app.domain.shared;
 
-public class Result<T>
+public sealed class Result<T>
 {
-	private T value;
-	private boolean isSuccess;
-	private boolean isFailure;
-	private Error error;
+	public record Success<T>(T value) extends Result<T>
+	{}
 
-	protected Result(T value, boolean isSuccess, Error error)
-	{
-		if (isSuccess && error != Error.None)
-		{
-			throw new IllegalArgumentException("Success result cannot have an error");
-		}
-		if (!isSuccess && error == Error.None)
-		{
-			throw new IllegalArgumentException("Failure result must have an error");
-		}
-
-		this.value = value;
-		this.isSuccess = isSuccess;
-		this.isFailure = !isSuccess;
-		this.error = error;
-	}
+	public record Failure<T>(Error error) extends Result<T>
+	{}
 
 	public static <T> Result<T> success(T value)
 	{
-		return new Result<T>(value, true, Error.None);
+		return new Success<>(value);
 	}
 
 	public static <T> Result<T> failure(Error error)
 	{
-		return new Result<T>(null, false, error);
+		return new Failure<>(error);
 	}
 
 	public boolean isSuccess()
 	{
-		return isSuccess;
+		return this instanceof Success;
 	}
 
 	public boolean isFailure()
 	{
-		return isFailure;
-	}
-
-	public Error getError()
-	{
-		return error;
+		return this instanceof Failure;
 	}
 
 	public T getValue()
 	{
-		if (isFailure)
+		if (this instanceof Success<T> success)
 		{
-			throw new IllegalStateException("Cannot get value from a failed result");
+			return success.value();
 		}
-		return value;
+		throw new IllegalStateException("Cannot get value from a failed result");
 	}
 
 	public T getValueOrNull()
 	{
-		return value;
+		if (this instanceof Success<T> success)
+		{
+			return success.value();
+		}
+		return null;
+	}
+
+	public Error getError()
+	{
+		if (this instanceof Failure<T> failure)
+		{
+			return failure.error();
+		}
+		throw new IllegalStateException("Cannot get error from a successful result");
 	}
 }

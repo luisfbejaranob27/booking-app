@@ -2,8 +2,8 @@ package code.luisfbejaranob.booking.app.domain.shared;
 
 public record Money(
 	Double amount,
-	Currency currency
-) {
+	Currency currency)
+{
 	public static final Money ZERO = new Money(0.0, null);
 
 	public Money add(Money money)

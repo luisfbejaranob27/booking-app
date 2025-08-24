@@ -1,5 +1,9 @@
 package code.luisfbejaranob.booking.app.domain.shared;
 
+import code.luisfbejaranob.booking.app.domain.apartment.ApartmentError;
+import code.luisfbejaranob.booking.app.domain.booking.BookingError;
+import code.luisfbejaranob.booking.app.domain.user.UserError;
+
 public class Error
 {
 	private final String code;
@@ -7,14 +11,46 @@ public class Error
 
 	public Error(DomainError error)
 	{
-		if (error == null) {
+		if (error == null)
+		{
 			throw new IllegalArgumentException("DomainError cannot be null");
 		}
 		this.code = error.getCode();
 		this.message = error.getMessage();
 	}
 
-	public Error(String code, String message) {
+	public Error(ApartmentError error)
+	{
+		if (error == null)
+		{
+			throw new IllegalArgumentException("ApartmentError cannot be null");
+		}
+		this.code = error.getCode();
+		this.message = error.getMessage();
+	}
+
+	public Error(BookingError error)
+	{
+		if (error == null)
+		{
+			throw new IllegalArgumentException("BookingError cannot be null");
+		}
+		this.code = error.getCode();
+		this.message = error.getMessage();
+	}
+
+	public Error(UserError error)
+	{
+		if (error == null)
+		{
+			throw new IllegalArgumentException("UserError cannot be null");
+		}
+		this.code = error.getCode();
+		this.message = error.getMessage();
+	}
+
+	public Error(String code, String message)
+	{
 		this.code = code;
 		this.message = message;
 	}

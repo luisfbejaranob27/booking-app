@@ -1,28 +1,35 @@
 package code.luisfbejaranob.booking.app.domain.shared;
 
-public class Currency
+public sealed class Currency
 {
-	private final CurrencyCode code;
+	public static final class USD extends Currency
+	{}
 
-	public Currency(CurrencyCode code)
-	{
-		this.code = code;
-	}
+	public static final class COP extends Currency
+	{}
+
+	public static final class EUR extends Currency
+	{}
 
 	public CurrencyCode getCode()
 	{
-		return code;
+		return switch (this)
+		{
+			case USD u -> CurrencyCode.USD;
+			case COP c -> CurrencyCode.COP;
+			case EUR e -> CurrencyCode.EUR;
+			default -> throw new IllegalStateException("Unknown currency type");
+		};
 	}
 
 	public static Currency fromCode(String code)
 	{
-		for (CurrencyCode currencyCode : CurrencyCode.values())
+		return switch (code.toUpperCase())
 		{
-			if (currencyCode.name().equalsIgnoreCase(code))
-			{
-				return new Currency(currencyCode);
-			}
-		}
-		throw new IllegalArgumentException("Invalid currency code: " + code);
+			case "USD" -> new USD();
+			case "COP" -> new COP();
+			case "EUR" -> new EUR();
+			default -> throw new IllegalArgumentException("Invalid currency code: " + code);
+		};
 	}
 }

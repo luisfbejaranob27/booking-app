@@ -6,5 +6,5 @@ public record PricingDetails(
 	Money priceForPeriod,
 	Money cleaningFee,
 	Money amenitiesUpcharge,
-	Money totalPrice
-) {}
+	Money totalPrice)
+{}

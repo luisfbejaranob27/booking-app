@@ -1,32 +1,98 @@
 package code.luisfbejaranob.booking.app.domain.user;
 
-import code.luisfbejaranob.booking.app.domain.shared.DomainError;
-
-public enum UserError implements DomainError
+public sealed interface UserError
 {
-	InvalidEmail("User.InvalidEmail", "The provided email is not valid"),
-	UserNotFound("User.NotFound", "User not found"),
-	DuplicateEmail("User.DuplicateEmail", "Email is already registered"),
-	InvalidPassword("User.InvalidPassword", "Password does not meet requirements");
+	String getCode();
 
-	private final String code;
-	private final String message;
+	String getMessage();
 
-	UserError(String code, String message)
+	record InvalidEmail(String email) implements UserError
 	{
-		this.code = code;
-		this.message = message;
+		@Override
+		public String getCode()
+		{
+			return "User.InvalidEmail";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "The provided email is not valid: " + email;
+		}
 	}
 
-	@Override
-	public String getCode()
+	record UserNotFound(String email) implements UserError
 	{
-		return code;
+		@Override
+		public String getCode()
+		{
+			return "User.NotFound";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "User not found with email: " + email;
+		}
 	}
 
-	@Override
-	public String getMessage()
+	record DuplicateEmail(String email) implements UserError
 	{
-		return message;
+		@Override
+		public String getCode()
+		{
+			return "User.DuplicateEmail";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Email is already registered: " + email;
+		}
+	}
+
+	record InvalidPassword(String email, String reason) implements UserError
+	{
+		@Override
+		public String getCode()
+		{
+			return "User.InvalidPassword";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Password does not meet requirements: " + reason;
+		}
+	}
+
+	record UserAlreadyExists(String email) implements UserError
+	{
+		@Override
+		public String getCode()
+		{
+			return "User.AlreadyExists";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "User already exists with email: " + email;
+		}
+	}
+
+	record InvalidUserData(String field, String reason) implements UserError
+	{
+		@Override
+		public String getCode()
+		{
+			return "User.InvalidData";
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return "Invalid " + field + ": " + reason;
+		}
 	}
 }
